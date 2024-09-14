@@ -1,0 +1,11 @@
+langchain==0.3.0
+langchain_ollama==0.2.0
+langchain_community
+ollama==0.3.3
+Pillow==10.4.0
+pymilvus==2.4.6
+st_annotated_text==4.0.1
+streamlit==1.27.2
+streamlit_card==0.0.61
+streamlit_extras==0.4.7
+tqdm==4.64.1
