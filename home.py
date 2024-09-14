@@ -10,14 +10,18 @@ from annotated_text import annotated_text, annotation
 
 from PIL import Image
 
-from langchain.llms import Ollama
-from langchain_ollama import OllamaEmbeddings
+from langchain_together import ChatTogether
+from openai import OpenAI
+
+import os
+
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+os.environ['TOGETHER_API_KEY'] = st.secrets['TOGETHER_API_KEY']
 
 from pymilvus import MilvusClient
 from tqdm import tqdm
-import ollama
 
-ollama.pull("llama3.1")
+openai_client = OpenAI()
 
 EMBEDDING_DIM = 768
 
@@ -28,16 +32,23 @@ text_file.close()
 docs = text_content.split("\n ")
 docs = docs[:10]
 
-llm = Ollama(model="llama3.1")
 
-
-embeddings = OllamaEmbeddings(
-    model="llama3.1",
+llm = ChatTogether(
+    model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
+    temperature=0,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    # other params...
 )
 
 
 def emb_text(text):
-    return embeddings.embed_query(text)[:EMBEDDING_DIM]
+    return (
+        openai_client.embeddings.create(input=text, model="text-embedding-3-small")
+        .data[0]
+        .embedding[:EMBEDDING_DIM]
+    )
 
 
 milvus_client = MilvusClient(uri="./milvus_demo.db")
@@ -125,7 +136,7 @@ if question := st.chat_input():
         context = search(question)
 
         SYSTEM_PROMPT = """
-        Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
+        You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
         """
         USER_PROMPT = f"""
         Use the following pieces of information enclosed in <context> tags to provide an answer to the question enclosed in <question> tags.
@@ -139,14 +150,22 @@ if question := st.chat_input():
 
         print(context)
 
-        response = llm.predict(SYSTEM_PROMPT + "\n" + USER_PROMPT)
+        messages = [
+            (
+                "system",
+                SYSTEM_PROMPT,
+            ),
+            ("human", USER_PROMPT),
+        ]
+        response = llm.invoke(messages)
 
         if response is not None:
 
             st.spinner(False)
 
-    print(response)
+    print(response.content)
 
-    st.session_state.messages.append(response)
+    st.session_state.messages.append(response.content)
 
-    st.chat_message("assistant").write(response)
+    st.chat_message("assistant").write(response.content)
+    
