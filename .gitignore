@@ -1,3 +1,4 @@
 
 milvus_demo.db
 .milvus_demo.db.lock
+.DS_Store

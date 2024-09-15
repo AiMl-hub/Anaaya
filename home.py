@@ -11,26 +11,25 @@ from annotated_text import annotated_text, annotation
 from PIL import Image
 
 from langchain_together import ChatTogether
-from openai import OpenAI
+from langchain_qdrant import QdrantVectorStore
+from langchain_qdrant import RetrievalMode
+from langchain_openai import OpenAIEmbeddings
 
 import os
 
-os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-os.environ['TOGETHER_API_KEY'] = st.secrets['TOGETHER_API_KEY']
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+os.environ["TOGETHER_API_KEY"] = st.secrets["TOGETHER_API_KEY"]
 
-from pymilvus import MilvusClient
-from tqdm import tqdm
 
-openai_client = OpenAI()
+embeddings = OpenAIEmbeddings()
 
 EMBEDDING_DIM = 768
 
-text_file = open("contexts.txt", "r")
+text_file = open("few_contexts.txt", "r")
 text_content = text_file.read()
 text_file.close()
 
 docs = text_content.split("\n ")
-docs = docs[:10]
 
 
 llm = ChatTogether(
@@ -39,60 +38,20 @@ llm = ChatTogether(
     max_tokens=None,
     timeout=None,
     max_retries=2,
-    # other params...
 )
 
-
-def emb_text(text):
-    return (
-        openai_client.embeddings.create(input=text, model="text-embedding-3-small")
-        .data[0]
-        .embedding[:EMBEDDING_DIM]
-    )
-
-
-milvus_client = MilvusClient(uri="./milvus_demo.db")
-
-collection_name = "my_rag_collection"
-if milvus_client.has_collection(collection_name):
-    milvus_client.drop_collection(collection_name)
-
-milvus_client.create_collection(
-    collection_name=collection_name,
-    dimension=EMBEDDING_DIM,  # Dimension of the embeddings",
-    metric_type="COSINE",  # Inner product distance
-    consistency_level="Strong",  # Strong consistency level
+qdrant = QdrantVectorStore.from_texts(
+    docs,
+    embedding=embeddings,
+    location=":memory:",
+    collection_name="my_documents",
+    retrieval_mode=RetrievalMode.DENSE,
 )
-
-
-data = []
-
-for i, line in enumerate(tqdm(docs, desc="Creating embeddings")):
-    data.append({"id": i, "vector": emb_text(line), "text": line})
-
-milvus_client.insert(collection_name=collection_name, data=data)
 
 
 def search(question):
-    search_res = milvus_client.search(
-        collection_name=collection_name,
-        data=[
-            emb_text(question)
-        ],  # Use the `emb_text` function to convert the question to an embedding vector
-        limit=3,  # Return top 3 results
-        search_params={"metric_type": "COSINE", "params": {}},
-        output_fields=["text"],  # Return the text field
-    )
 
-    retrieved_lines_with_distances = [
-        (res["entity"]["text"], res["distance"]) for res in search_res[0]
-    ]
-
-    context = "\n".join(
-        [line_with_distance[0] for line_with_distance in retrieved_lines_with_distances]
-    )
-
-    return context
+    return qdrant.similarity_search(question)
 
 
 st.set_page_config(
@@ -123,7 +82,7 @@ for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
 
-# "can doxycycline cause side effects in patients with acne?"
+# "can doxycycline cause severe side effects in patients with acne?"
 
 if question := st.chat_input():
 
@@ -168,4 +127,3 @@ if question := st.chat_input():
     st.session_state.messages.append(response.content)
 
     st.chat_message("assistant").write(response.content)
-    
