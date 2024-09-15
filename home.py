@@ -29,7 +29,8 @@ text_file = open("few_contexts.txt", "r")
 text_content = text_file.read()
 text_file.close()
 
-docs = text_content.split("\n ")
+# docs = text_content.split("\n ")
+docs = text_content.split("***")
 
 
 llm = ChatTogether(
