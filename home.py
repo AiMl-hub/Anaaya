@@ -95,10 +95,11 @@ if question := st.chat_input():
         context = search(question)
 
         SYSTEM_PROMPT = """
-        You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
+        You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided. If the context does not have sufficient information, you can use your own knowledge to provide a helpful answer.
         """
+
         USER_PROMPT = f"""
-        Use the following pieces of information enclosed in <context> tags to provide an answer to the question enclosed in <question> tags.
+        Use the following pieces of information enclosed in <context> tags to provide an answer to the question enclosed in <question> tags. If the context does not provide enough information, rely on your own knowledge to answer.
         <context>
         {context}
         </context>
