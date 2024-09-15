@@ -2,7 +2,7 @@
 
 ## :arrow_forward: Demo  
 - Visit: [Anaaya](https://anaaya.streamlit.app/)
-- Query example: <code>Can doxycycline cause severe side effects in patients with acne?</code>
+- Query example: <code>Can doxycycline cause side effects to Patient ID: 001?</code>
 
 ## :hearts: Acknowledgement
 - https://mindsdb.com/
