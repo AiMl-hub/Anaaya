@@ -110,10 +110,10 @@ if question := st.chat_input():
         # """
 
         SYSTEM_PROMPT = """
-        You are an AI assistant. Use your own knowledge if the context provided does not have sufficient information. However, try using contextual passage snippets first for accurate and helpful answers. If you're unsure about external sources, use your internal knowledge to provide a response that's as accurate and informative as possible.
+        You are an AI assistant. You are able to find answers to the questions. Try using contextual passage snippets first for accurate and helpful answers. If the context does not have sufficient information, use your internal knowledge to provide a response that's as accurate and informative as possible.
         """
         USER_PROMPT = f"""
-        Use the following pieces of information enclosed in <context> tags to provide an answer to the question enclosed in <question> tags. If the context does not provide enough information, rely on your own knowledge to answer. You can use external sources if necessary but be aware that using external knowledge might lead to less accurate responses.
+        Answer the following question enclosed in <question> tags. Try to prioritize using the following pieces of information enclosed in <context> tags to provide an answer to the question.
         <context>
         {context}
         </context>
