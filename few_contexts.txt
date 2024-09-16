@@ -10,8 +10,6 @@
 ***Retin-A (Retin-A) can cause side effects/reactions in a patient with Acne. These side effects include hives; difficult breathing; swelling of your face, lips, tongue, or throat. Stop using Retin-A and call your doctor at once if you have: severe burning, stinging, or irritation of treated skin; severe redness, swelling, blistering, peeling, or crusting; Your skin may be more sensitive to weather extremes such as cold and wind while using this medicine. Common Retin-A side effects may include: mild warmth or stinging where the medicine was applied; or changes in color of treated skin.
 ***Aczone (dapsone topical) can cause side effects/reactions in a patient with Acne. These side effects include hives; difficult breathing; swelling of your face, lips, tongue, or throat. Aczone may cause methemoglobinemia (met-HEEM-oh glo-bin-EE-mee-a), a serious condition in which the amount of oxygen in your blood stream becomes dangerously low. Stop using this medicine and call your doctor at once if you notice a blue or gray appearance of your lips, fingernails, or the inside of your mouth. Call your doctor at once if you have: severe sore throat; unusual thoughts or behavior; a red blood cell disorder - back pain, pale or yellowed skin, dark colored urine, fever, confusion or weakness; pancreas problems - severe pain in your upper stomach spreading to your back, nausea and vomiting, fast heart rate; or severe skin reaction - fever, sore throat, swelling in your face or tongue, burning in your eyes, skin pain followed by a red or purple skin rash that spreads (especially in the face or upper body) and causes blistering and peeling. Common Aczone side effects may include: dry or peeling skin; oily skin; or redness where the medicine was applied.
 
-***Patient ID: 001
-Diagnosis: Diagnosed with Acne.
+***Patient ID: 001. Diagnosis: Acne.
 
-***Patient ID: 002
-Diagnosis: Not diagnosed with Acne.
+***Patient ID: 002. Diagnosis: No Acne.
